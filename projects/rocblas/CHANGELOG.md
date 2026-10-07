@@ -5,6 +5,10 @@ rocBLAS documentation is available at
 
 ## rocBLAS 5.8.0
 
+### Changed
+
+* On gfx942, hipBLASLt is now the default GEMM backend for the `f16_r`, `bf16_r`, and `f64_r` input types, including their mixed-precision `gemm_ex` forms. All other input types on gfx942 continue to default to Tensile, and problems for which hipBLASLt provides no solution still fall back to Tensile.
+
 ### Removed
 
 * The `ROCBLAS_USE_HIPBLASLT_BATCHED` environment variable, deprecated in `rocBLAS 5.6.0`, is removed and is now ignored. Batched GEMM is controlled by the same environment variable as all other GEMM, so a batched-only override is no longer required. Use `ROCBLAS_USE_HIPBLASLT=0` to select the Tensile backend for all GEMM, including batched.
