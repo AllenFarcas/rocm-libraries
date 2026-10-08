@@ -34,6 +34,7 @@
 #include <hipdnn_plugin_sdk/ingestor/MakeEngine.hpp>
 
 #include "engines/kernel_ingestor_engine/KernelIngestorEngine.hpp"
+#include "engines/kernel_ingestor_engine/detail/EngineIdRecordingEngine.hpp"
 #endif
 
 #include <hipdnn_data_sdk/logging/Logger.hpp>
@@ -126,8 +127,11 @@ const std::vector<Container::EngineDefinition>& Container::getEngineDefinitions(
                      {
                          // Device facts are resolved per call from the handle, not from
                          // the construction-time provider.
-                         return hipdnn_plugin_sdk::ingestor::makeEngine<Handle, Settings, Context>(
-                             set, kernel_ingestor_engine::deviceResolver());
+                         return std::make_unique<
+                             kernel_ingestor_engine::detail::EngineIdRecordingEngine>(
+                             hipdnn_plugin_sdk::ingestor::makeEngine<Handle, Settings, Context>(
+                                 kernel_ingestor_engine::withComputedBehaviorNotes(set),
+                                 kernel_ingestor_engine::deviceResolver()));
                      }
                      catch(const std::exception& error)
                      {
